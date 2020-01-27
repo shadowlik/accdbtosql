@@ -23,17 +23,23 @@ for t in $TABLES; do
 done
 
 # Criando o o schema da tabelas do banco
-FILE_SCHEMA="${FOLDER}/${MDB}.sql"
-echo "Criando schema do banco ${MDB} -> ${FILE_SCHEMA}"
-mdb-schema $1 mysql > $FILE_SCHEMA
-$MYSQL --host="$MHOST" --user="$MUSER" -e "SET names 'utf8'; SOURCE ${FILE_SCHEMA};" $MDB
+FILE_SCHEMA="${FOLDER}/${MDB}.sql";
+echo "Criando schema do banco ${MDB} -> ${FILE_SCHEMA}";
+mdb-schema $1 mysql > $FILE_SCHEMA;
+$MYSQL --host="$MHOST" --user="$MUSER" -e "SET names 'utf8'; SOURCE ${FILE_SCHEMA};" $MDB;
+rm $FILE_SCHEMA;
 
 for t in $TABLES; do
-    FILE_TABLE="${FOLDER}/${MDB}_${t}_inserts.sql"
-    echo "Criando sql de registros da tabela ${MDB}/${t} -> ${FILE_TABLE}"
-    mdb-export -D '%Y-%m-%d %H:%M:%S' -I mysql $1 $t > $FILE_TABLE
-    echo "Importando sql de registros da tabela ${MDB}/${t} -> ${FILE_TABLE}"
-    $MYSQL --host="$MHOST" --user="$MUSER" -e "SET names 'utf8'; SOURCE ${FILE_TABLE};" $MDB
+    FILE_TABLE="${FOLDER}/${MDB}_${t}_inserts.sql";
+
+    echo "Criando sql de registros da tabela ${MDB}.${t}";
+    mdb-export -D '%Y-%m-%d %H:%M:%S' -I mysql $1 $t > $FILE_TABLE;
+
+    echo "Importando sql de registros da tabela ${MDB}.${t}";
+    $MYSQL --host="$MHOST" --user="$MUSER" -e "SET names 'utf8'; SOURCE ${FILE_TABLE};" $MDB;
+    rm $FILE_TABLE;
 done
 
 rm -R $FOLDER
+
+echo "Finalizado importação em ${SECONDS} segundos";
