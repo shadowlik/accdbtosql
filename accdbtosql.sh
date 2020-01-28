@@ -23,7 +23,7 @@ for t in $TABLES; do
         continue
     fi;
     echo "Deletando a tabela ${t} caso exista"
-    $MYSQL --force --host="$MHOST" --user="$MUSER" $MDB -e "DROP TABLE IF EXISTS `${t}`"
+    $MYSQL --force --host="$MHOST" --user="$MUSER" $MDB -e "DROP TABLE IF EXISTS ${t}"
 done
 
 # Criando o o schema da tabelas do banco
